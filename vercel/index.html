@@ -1,0 +1,25 @@
+<input type="file" id="fileInput" multiple />
+<button onclick="mergeFiles()">結合して保存</button>
+
+<script>
+async function mergeFiles() {
+  const input = document.getElementById('fileInput');
+  const files = [...input.files];
+
+  // 名前順に並び替え（split0, split1, ..., splitN）
+  files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+  const blobs = [];
+  for (const file of files) {
+    blobs.push(await file.arrayBuffer());
+  }
+
+  const merged = new Blob(blobs, { type: "application/octet-stream" });
+  const url = URL.createObjectURL(merged);
+  
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "merged.assets";
+  a.click();
+}
+</script>
